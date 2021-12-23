@@ -1,0 +1,557 @@
+<html>
+    <head>
+        <style>
+			@font-face {
+				font-family: geom;
+				src: url(geom.ttf);
+				}
+			body{font-family: geom;
+				background-color: #E7E8E8;
+				text-align: center;
+			}
+			.button{
+				border-radius: 4px;
+				padding: 10 20 10 20;
+				margin: 5 5 5 5;
+				border: none;
+				background: #3B3B3B 0% 0% no-repeat padding-box;
+				color: white;
+				font-size: 18px;
+				font-family: Helvetica Neue;
+				font-style: bold;
+				cursor: pointer;
+				transition-duration: 0.4s;
+  				-webkit-transition-duration: 0.4s;
+			}
+			.button:hover {
+				transition-duration: 0.1s;
+				background-color: #525050;
+			}
+
+			.input{
+				background: #FFFFFF 0% 0% no-repeat padding-box;
+				color: #3B3B3B;
+				font-size: 18px;
+				padding: 10 20 10 20;
+				font-family: Helvetica Neue;
+			}
+
+			.grid-container{
+				display: grid;
+				grid-template-columns: auto auto auto;
+				grid-gap: 10px;
+				padding: 10px;
+			}
+
+			.item1 {
+				grid-column-start: 1;
+				grid-column-end: 2;
+				margin-top: 1.4em;
+				}
+
+			.item2{
+				margin-top: 1.4em;
+			}
+			.item3{
+				grid-column-start: 1;
+				grid-column-end: 3;
+				text-align: center;
+				margin-top: 1.4em;
+			}
+		</style>
+    </head>
+
+    <body>
+
+        <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+        <script>
+            var contract;
+
+            $(document).ready(function(){
+                window.web3 = new Web3(window.ethereum);
+
+                var address = "YOUR ADDRESS";
+				var adbi = [
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_smscode",
+				"type": "uint256"
+			}
+		],
+		"name": "declareReceiver",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_smscode",
+				"type": "uint256"
+			}
+		],
+		"name": "declareShipper",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_receiver",
+				"type": "address"
+			}
+		],
+		"name": "getReceiverAsset",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getReceiverAssetList",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getReceiverHashedAssetList",
+		"outputs": [
+			{
+				"internalType": "bytes32[]",
+				"name": "",
+				"type": "bytes32[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_shipper",
+				"type": "address"
+			}
+		],
+		"name": "getShipperAsset",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getShipperHashedAssetList",
+		"outputs": [
+			{
+				"internalType": "bytes32[]",
+				"name": "",
+				"type": "bytes32[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getassetHash",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_assetId",
+				"type": "uint256"
+			}
+		],
+		"name": "hashAsset",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_assetId",
+				"type": "uint256"
+			}
+		],
+		"name": "receiverRequestTranser",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "shipperSendAsset",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]
+                var abi = [
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_smscode",
+				"type": "uint256"
+			}
+		],
+		"name": "declareReceiver",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_smscode",
+				"type": "uint256"
+			}
+		],
+		"name": "declareShipper",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_receiver",
+				"type": "address"
+			}
+		],
+		"name": "getReceiverAsset",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getReceiverAssetList",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getReceiverHashedAssetList",
+		"outputs": [
+			{
+				"internalType": "bytes32[]",
+				"name": "",
+				"type": "bytes32[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_shipper",
+				"type": "address"
+			}
+		],
+		"name": "getShipperAsset",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getShipperHashedAssetList",
+		"outputs": [
+			{
+				"internalType": "bytes32[]",
+				"name": "",
+				"type": "bytes32[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getassetHash",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_assetId",
+				"type": "uint256"
+			}
+		],
+		"name": "hashAsset",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_assetId",
+				"type": "uint256"
+			}
+		],
+		"name": "receiverRequestTranser",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "shipperSendAsset",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+];
+				
+				contract = new web3.eth.Contract(abi, address);
+
+                $('#declareReceiver').click(function(){
+                    var sms;
+                    sms = parseInt($(smsCodeReceiver).val());
+
+                	window.ethereum.request({method:'eth_requestAccounts'}).then(function(accounts){
+                        var acc = accounts[0];
+                        return contract.methods.declareReceiver(sms).send({from: acc});
+                    }).then(function(tx){
+                        console.log(tx);
+						$('#youare').html("You are a Receiver");
+                    }).catch(function(err){
+                        console.log(err);
+                    })
+                })
+
+				$('#receiverRequestTransfer').click(function(){
+                    var id;
+                    id = parseInt($(reqAssetId).val());
+
+                	window.ethereum.request({method:'eth_requestAccounts'}).then(function(accounts){
+                        var acc = accounts[0];
+                        return contract.methods.receiverRequestTranser(id).send({from: acc});
+                    }).then(function(tx){
+                        console.log(tx);
+                    }).catch(function(err){
+                        console.log(err);
+                    })
+                })
+
+				$('#declareShipper').click(function(){
+                    var sms;
+                    sms = parseInt($(smsCodeShipper).val());
+
+                	window.ethereum.request({method:'eth_requestAccounts'}).then(function(accounts){
+                        var acc = accounts[0];
+                        return contract.methods.declareShipper(sms).send({from: acc});
+                    }).then(function(tx){
+                        console.log(tx);
+						$('#youare').html("You are a Sender");
+                    }).catch(function(err){
+                        console.log(err);
+                    })
+                })
+
+				$('#hashAsset').click(function(){
+                    var id;
+                    id = parseInt($(assetIdToHash).val());
+
+                	window.ethereum.request({method:'eth_requestAccounts'}).then(function(accounts){
+                        var acc = accounts[0];
+                        return contract.methods.hashAsset(id).send({from: acc});
+                    }).then(function(tx){
+                        console.log(tx);
+                    }).catch(function(err){
+                        console.log(err);
+                    })
+                })
+
+				$('#shipperSendAsset').click(function(){
+                	window.ethereum.request({method:'eth_requestAccounts'}).then(function(accounts){
+                        var acc = accounts[0];
+                        return contract.methods.shipperSendAsset().send({from: acc});
+                    }).then(function(tx){
+                        console.log(tx);
+                    }).catch(function(err){
+                        console.log(err);
+                    })
+                })
+
+                $('#getassetHash').click(function(){
+                    contract.methods.getassetHash().call().then(function(as){
+                        $('#assetHash').html(as);
+                    })
+                })
+
+                $('#getReceiverAssetList').click(function(){
+                    contract.methods.getReceiverAssetList().call().then(function(as){
+                        $('#recAssetList').html(as + ", ");
+                    })
+                })
+
+                $('#getReceiverHashedAssetList').click(function(){
+                    contract.methods.getReceiverHashedAssetList().call().then(function(as){
+                        $('#recHashedAssetList').html(as + ", ");
+                    })
+                })
+
+                $('#getShipperHashedAssetList').click(function(){
+                    contract.methods.getShipperHashedAssetList().call().then(function(as){
+                        $('#ShipHashedAssetList').html(as + ", ");
+                    })
+                })
+            })
+        </script>
+	<div class="grid-container">
+		<img src="incirlabs.svg">
+
+		<h3 id="youare" style="text-align: center;"></h3>
+
+		<div class="item1">
+            <div class="decShipper">
+                <div><input class="input" type="text" id="smsCodeShipper" placeholder="Please type your SMS CODE to declare yourself as a SHIPPER"></div>
+                <button class="button" id="declareShipper">DECLARE AS SENDER</button>
+            </div>
+
+            <div class="decAsset">
+                <div><input class="input" type="text" id="assetIdToHash" placeholder="Type the ID of an Asset that you want to send"></div>
+                <button class="button" id="hashAsset">Declare Asset</button>
+            </div>
+
+            <div class="sendAsset">
+                <button class="button" id="shipperSendAsset">Send The Asset</button>
+            </div>
+        </div>
+
+        <div class="item2">
+            <div class="decReceiver">
+               <div> <input class="input" type="text" id="smsCodeReceiver" placeholder="Please type your SMS CODE to declare yourself as a RECEIVER"> </div>
+                <button class="button" id="declareReceiver">DECLARE AS RECEIVER</button> 
+            </div>
+
+            <div class="requestReceiver">
+                <div><input class="input" type="text" id="reqAssetId" placeholder="Type Asset ID to request"></div>
+                <button class="button" id="receiverRequestTransfer">Request An Asset</button>
+            </div>
+        </div>
+
+        <div class="item3">
+            <div>
+                <button class="button" id="getassetHash">Get Asset Hash</button>
+                <p id="assetHash"></p>
+            </div>
+
+            <div>
+                <button class="button" id="getReceiverAssetList">Get Receiver Asset List</button>
+                <p id="recAssetList"></p>
+            </div>
+
+            <div>
+                <button class="button" id="getReceiverHashedAssetList">Get Receiver Hashed Asset Hash</button>
+                <p id="recHashedAssetList"></p>
+            </div>
+
+            <div>
+                <button class="button" id="getShipperHashedAssetList" type="button" class="btn btn-primary">Get Shipper Hashed Asset Hash</button>
+                <p id="ShipHashedAssetList"></p>
+            </div>
+
+            <!--<div>
+                <input type="text" id="ReceiverAssetList" placeholder="Type Address to learn Assets of Receiver">
+                <button id="getReceiverAsset">getReceiverAsset</button>
+				<p id="recHashedAssetList"></p>
+            </div>
+
+            <div>
+                <input type="text" id="ShipperAssetList" placeholder="Type Address to learn Assets of Receiver">
+                <button id="getShipperAsset">getShipperAsset</button>
+				<p id="ShipHashedAssetList"></p>
+            </div> -->
+        </div>
+	</div>
+    </body>
+</html>
